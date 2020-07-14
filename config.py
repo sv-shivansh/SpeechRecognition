@@ -22,11 +22,17 @@ def record():
 	frames = []
 
 	try:
-		for i in range(0,int(RATE/CHUNK*RECORD_SECONDS)):
+		initial_time = datetime.now()
+		while (True):
 			data = stream.read(CHUNK)
 			frames.append(data)
 			data_chunk=array('h',data)
-			print(max(data_chunk), datetime.now())
+			if max(data_chunk < 9000):
+				initial_time = datetime.now()
+			current_time = datetime.now()
+			print(max(data_chunk), datetime.now(), current_time.second - initial_time.second)
+			if (max(data_chunk) < 9000 and current_time.second - initial_time.second > 5) :
+				break
 	except KeyboardInterrupt:
 		print("Done recording")
 	except Exception as e:
